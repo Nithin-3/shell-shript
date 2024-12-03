@@ -46,7 +46,6 @@ def handshake(tar):
 
 def handle_client(tar,shell):
     cmd = ''
-    line = 21
     while cmd != '/21':
         cmd = input(f'{shell}> ')
         if cmd!='':
@@ -56,8 +55,6 @@ def handle_client(tar,shell):
                 print(f"{res}")
             else:
                 print("No response received or connection lost.")
-            cmd = ''
-            line += len(res.splitlines()) + 2
             time.sleep(0.3)
 
 
